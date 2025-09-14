@@ -28,11 +28,13 @@ public class MatchServiceImpl implements MatchService {
     private final OpenAIService openAIService;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getAllMatches() {
         return matchRepository.findAll();
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Match> getMatchById(Long id) {
         return matchRepository.findById(id);
     }
@@ -114,16 +116,19 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getMatchesForCandidate(Long candidateId) {
         return matchRepository.findByCandidateId(candidateId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getMatchesForJob(Long jobId) {
         return matchRepository.findByJobId(jobId);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<Match> getMatchByCandidateAndJob(Long candidateId, Long jobId) {
         Candidate candidate = candidateRepository.findById(candidateId)
                 .orElseThrow(() -> new RuntimeException("Candidate not found with id: " + candidateId));
@@ -135,11 +140,13 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getHighQualityMatches(Double minScore) {
         return matchRepository.findHighQualityMatches(minScore);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getTopMatchesForCandidate(Long candidateId, int limit) {
         // This simplistically gets all matches and limits them in memory
         // In a real implementation, you'd want to add a limit clause to the query
@@ -149,6 +156,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Match> getTopCandidatesForJob(Long jobId, int limit) {
         // This simplistically gets all matches and limits them in memory
         // In a real implementation, you'd want to add a limit clause to the query
@@ -158,6 +166,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Double calculateMatchScore(Long candidateId, Long jobId) {
         try {
             // Get the candidate and job data
@@ -188,6 +197,7 @@ public class MatchServiceImpl implements MatchService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Map<String, Object> generateMatchDetails(Long candidateId, Long jobId) {
         try {
             // Get the candidate and job data
