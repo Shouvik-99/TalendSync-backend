@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  talentsync-api:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - DATABASE_URL=jdbc:postgresql://dpg-d2q36n15pdvs73djn320-a.oregon-postgres.render.com/talensyncdatabase
+      - DATABASE_USERNAME=talensyncdatabase_user
+      - DATABASE_PASSWORD=rK8PDbh38AO7dmm9omjmKpuzR0HA7Kwr
+      - JWT_SECRET_KEY=8cb9081783eb103ccf1aa01b182c6d62f0d3f249e8419d4493d7e9a74f2ddac6
+      - JWT_EXPIRATION=86400000
+      - JWT_REFRESH_EXPIRATION=604800000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173,https://talentsync.netlify.app
+    depends_on:
+      - postgres
+    networks:
+      - talentsync-network
+
+  # Optional: Local PostgreSQL for development
+  postgres:
+    image: postgres:14
+    environment:
+      - POSTGRES_DB=talentsync_local
+      - POSTGRES_USER=talentsync
+      - POSTGRES_PASSWORD=password123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - talentsync-network
+
+volumes:
+  postgres_data:
+
+networks:
+  talentsync-network:
+    driver: bridge
